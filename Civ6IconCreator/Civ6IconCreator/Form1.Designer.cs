@@ -55,6 +55,8 @@
             this.sedDirDialog = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.checkBoxDirectX10 = new System.Windows.Forms.CheckBox();
+            this.checkBoxNoGPU = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -272,12 +274,14 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.checkBoxNoGPU);
+            this.tabPage2.Controls.Add(this.checkBoxDirectX10);
             this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Controls.Add(this.ResetButton);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(629, 353);
+            this.tabPage2.Size = new System.Drawing.Size(628, 353);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "設定";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -322,6 +326,28 @@
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(151, 17);
             this.toolStripStatusLabel1.Text = "アプリケーションを起動しました。";
+            // 
+            // checkBoxDirectX10
+            // 
+            this.checkBoxDirectX10.AutoSize = true;
+            this.checkBoxDirectX10.Location = new System.Drawing.Point(10, 40);
+            this.checkBoxDirectX10.Name = "checkBoxDirectX10";
+            this.checkBoxDirectX10.Size = new System.Drawing.Size(126, 16);
+            this.checkBoxDirectX10.TabIndex = 5;
+            this.checkBoxDirectX10.Text = "DirectX10互換モード";
+            this.checkBoxDirectX10.UseVisualStyleBackColor = true;
+            this.checkBoxDirectX10.CheckedChanged += new System.EventHandler(this.checkBoxDirectX10_CheckedChanged);
+            // 
+            // checkBoxNoGPU
+            // 
+            this.checkBoxNoGPU.AutoSize = true;
+            this.checkBoxNoGPU.Location = new System.Drawing.Point(10, 63);
+            this.checkBoxNoGPU.Name = "checkBoxNoGPU";
+            this.checkBoxNoGPU.Size = new System.Drawing.Size(109, 16);
+            this.checkBoxNoGPU.TabIndex = 6;
+            this.checkBoxNoGPU.Text = "GPUを使用しない";
+            this.checkBoxNoGPU.UseVisualStyleBackColor = true;
+            this.checkBoxNoGPU.CheckedChanged += new System.EventHandler(this.checkBoxNoGPU_CheckedChanged);
             // 
             // Form1
             // 
@@ -375,6 +401,8 @@
         private System.Windows.Forms.Button ResetButton;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.CheckBox checkBoxDirectX10;
+        private System.Windows.Forms.CheckBox checkBoxNoGPU;
     }
 }
 

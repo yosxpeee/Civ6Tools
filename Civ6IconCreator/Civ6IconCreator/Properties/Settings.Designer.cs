@@ -46,5 +46,29 @@ namespace Civ6IconCreator.Properties {
                 this["outputDirName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool checkedDX10 {
+            get {
+                return ((bool)(this["checkedDX10"]));
+            }
+            set {
+                this["checkedDX10"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool checkedNoGPU {
+            get {
+                return ((bool)(this["checkedNoGPU"]));
+            }
+            set {
+                this["checkedNoGPU"] = value;
+            }
+        }
     }
 }

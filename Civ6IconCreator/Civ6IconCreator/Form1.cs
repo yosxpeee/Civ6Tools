@@ -16,11 +16,12 @@ namespace Civ6IconCreator
 {
     public partial class Form1 : Form
     {
-        //グローバル変数定義
+        //Form内共通変数、定数
         string outputDirName;
         string inputFilePath;
         string texConvPath;
         string sedPath;
+
         int[] sizesLeaders       = new int[] {256, 80,64,55,50,45,32};
         int[] sizesCivilizations = new int[] {256, 80,64,50,48,45,44,36,30,22};
         int[] sizesUnitFlags     = new int[] {256, 80,50,38,32,22};
@@ -29,6 +30,7 @@ namespace Civ6IconCreator
         int[] sizesDistricts     = new int[] {256,128,80,50,38,32,22};
         int[] sizesImprovements  = new int[] {256, 80,50,38};
 
+        //コンストラクタ
         public Form1()
         {
             InitializeComponent();
@@ -70,8 +72,13 @@ namespace Civ6IconCreator
                 outputTextBox.Text = "";
                 outputDirDialog.SelectedPath = System.Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             }
+            //DirectX10互換モード
+            checkBoxDirectX10.Checked = Properties.Settings.Default.checkedDX10;
 
-            //外部アプリケーションは直下にあるものとして処理する
+            //GPU使用有無
+            checkBoxNoGPU.Checked = Properties.Settings.Default.checkedNoGPU;
+
+            //外部アプリケーションは直下にあるものとして設定する
             texConvPath = System.Windows.Forms.Application.StartupPath + @"\texconv.exe";
             sedPath = System.Windows.Forms.Application.StartupPath + @"\onigsed.exe";
 
@@ -84,6 +91,13 @@ namespace Civ6IconCreator
 #endif
         }
 
+        //========================================
+        // イベント
+        //========================================
+        //====================
+        // メイン
+        //====================
+        //Inputの開くボタンが押されたとき
         private void inputButton_Click(object sender, EventArgs e)
         {
             //Inputの画像を開くボタン
@@ -124,9 +138,9 @@ namespace Civ6IconCreator
             }
         }
 
+        //Outputの開くボタンが押されたとき
         private void outputButton_Click(object sender, EventArgs e)
         {
-            //Optput先を開くボタン
             if (DialogResult.OK == outputDirDialog.ShowDialog())
             {
                 outputDirName = outputDirDialog.SelectedPath;
@@ -143,10 +157,9 @@ namespace Civ6IconCreator
             }
         }
 
+        //生成ボタンが押されたとき
         private void generateButton_Click(object sender, EventArgs e)
         {
-            //Generate
-
             //チェックされてるものに合わせてDDS変換とTex生成を実施する
             if (radioButton1.Checked) {
                 _generateDDS(sizesLeaders);
@@ -183,28 +196,78 @@ namespace Civ6IconCreator
                 _generateTex("Improvements", sizesImprovements);
                 toolStripStatusLabel1.Text = "変換完了(Improvements)";
             };
-
         }
 
+        //====================
+        // オプション
+        //====================
+        //記憶場所消去のボタンが押されたとき
+        private void ResetButton_Click(object sender, EventArgs e)
+        {
+            inputFilePath = "";
+            outputDirName = "";
+            inputTextBox.Text = "";
+            outputTextBox.Text = "";
+            Properties.Settings.Default.inputFile = "";
+            Properties.Settings.Default.outputDirName = "";
+            Properties.Settings.Default.Save();
+
+            toolStripStatusLabel1.Text = "ディレクトリの記憶情報を消去しました。";
+        }
+
+        //DirectX互換モードのチェックが変わったとき
+        private void checkBoxDirectX10_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.checkedDX10 = checkBoxDirectX10.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        //GPUを使用しないのチェックが変わったとき
+        private void checkBoxNoGPU_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.checkedNoGPU = checkBoxNoGPU.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        //========================================
+        // 内部関数
+        //========================================
         //DDS変換関数(texconvに丸投げ)
         private void _generateDDS(int[] sizes)
         {
+            string optDx10 = "";
+            string optNoGPU = "";
+
+            //DirectX10互換モードの有無
+            if (checkBoxDirectX10.Checked)
+            {
+                optDx10 = "-dx10 ";
+            }
+            //GPU使用の有無
+            if (checkBoxNoGPU.Checked)
+            {
+                optNoGPU = "-nogpu ";
+            }
+
             foreach (int imgSize in sizes)
             {
                 //PNGからDDSに変換
-                var app = new ProcessStartInfo();
-                app.FileName = texConvPath;
-                app.Arguments = " -y -f R8G8B8A8_UNORM -if BOX -w " + imgSize + " -h " + imgSize + " -m 1 -sx " + imgSize + " -o \"" + outputDirName + "\" \""+ inputFilePath + "\"";
-                app.WorkingDirectory = System.IO.Path.GetDirectoryName(texConvPath);
-                app.CreateNoWindow = true;
-                app.RedirectStandardOutput = true;
-                app.UseShellExecute = false;
+                var app = new ProcessStartInfo
+                {
+                    FileName = texConvPath,
+                    Arguments = " -y -f R8G8B8A8_UNORM " + optDx10 + optNoGPU + "-if BOX -w " + imgSize + " -h " + imgSize + " -m 1 -sx " + imgSize + " -o \"" + outputDirName + "\" \"" + inputFilePath + "\"",
+                    WorkingDirectory = System.IO.Path.GetDirectoryName(texConvPath),
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                };
 #if DEBUG
                 File.AppendAllText("debug.log", app.FileName  + @" " + app.Arguments + "\r\n");
 
                 Process p = Process.Start(app);
                 string output = p.StandardOutput.ReadToEnd(); // 標準出力の読み取り
                 output = output.Replace("\r\r\n", "\n"); // 改行コードの修正
+
                 File.AppendAllText("debug.log", output);
 #else
                 Process.Start(app);
@@ -239,20 +302,12 @@ namespace Civ6IconCreator
                 File.AppendAllText("debug.log", app.FileName + @" " + app.Arguments + "\r\n");
 #endif
                 string output = p.StandardOutput.ReadToEnd(); // 標準出力の読み取り
+#if DEBUG
+                File.AppendAllText("debug.log", "========================================\r\n");
+                File.AppendAllText("debug.log", output+"\r\n");
+#endif
                 File.WriteAllText(outputPath, output);
             }
-        }
-
-        private void ResetButton_Click(object sender, EventArgs e)
-        {
-            //記憶場所消去ボタン
-            inputFilePath = "";
-            outputDirName = "";
-            inputTextBox.Text = "";
-            outputTextBox.Text = "";
-            Properties.Settings.Default.inputFile = "";
-            Properties.Settings.Default.outputDirName = "";
-            Properties.Settings.Default.Save();
         }
     }
 }

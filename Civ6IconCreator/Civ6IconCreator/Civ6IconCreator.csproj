@@ -214,7 +214,9 @@
     <None Include="template\tex\UnitPortraits\UnitPortraitsTemplate38.tex">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="template\tex\UnitPortraits\UnitPortraitsTemplate50.tex" />
+    <None Include="template\tex\UnitPortraits\UnitPortraitsTemplate50.tex">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="template\tex\UnitPortraits\UnitPortraitsTemplate70.tex">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
